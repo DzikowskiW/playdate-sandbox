@@ -19,12 +19,14 @@ function World:init()
     self.tileMap:setImageTable(platformImageTable)
     self.tileMap:setSize(25, 15)
     self.tileMap:setTiles(mapLayer.data, mapLayer.width)
-    self.tileMap:draw(0,0)
 
-    -- printTable(self.tileMap:getTiles())
+    self.addWallSprites(self.tileMap)
+
+    self:setBounds(0,0,400,240)
     self:add()
+
+    self.draw = function() self.tileMap:draw(0,0) end
 end
 
 function World:update()
-    self.tileMap:draw(0,0)
 end

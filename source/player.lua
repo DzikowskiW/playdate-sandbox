@@ -28,6 +28,7 @@ function Player:init(xx, yy)
     self:setAnimationState('running')
     self:moveTo(self.transform.x, self.transform.y)
     self:setSize(48, 48)
+    self:setCollideRect(7, 7, 32, 36)
     self:add()
 end
 
