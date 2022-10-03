@@ -5,8 +5,9 @@ import "world"
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
+
+Player(30, 142)
 World()
-Player(30, 130)
 
 function playdate.update() 
     gfx.sprite.update()
