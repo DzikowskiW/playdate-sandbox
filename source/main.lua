@@ -6,7 +6,7 @@ local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 
-Player(30, 142)
+Player(30, 0)
 World()
 
 function playdate.update() 
