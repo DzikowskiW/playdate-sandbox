@@ -53,20 +53,24 @@ function Player:update()
     self:setImage(self.animationLoop:image(), self.pos.flip, 2)
     local idle = true
 
+    -- check for input
+    -- check for physics
+    -- move 
+
     oldY = self.y
     local actualX, actualY, collisions = self:moveWithCollisions(self.x, self.y + self.pos.vy)
     if self.y + self.pos.vy == actualY then
         self.pos.vy += self.pos.gravity
     else
         self.pos.vy = 0
-        print('inAir')
     end
-
+    
     -- jump 
     if pd.buttonIsPressed(pd.kButtonUp) then
-        self.pos.vy = -10
+        self.pos.vy += -10
         -- idle = false
     end
+    print('inAir', self.pos.vy)
 
     -- direction
     if pd.buttonIsPressed(pd.kButtonLeft) then
