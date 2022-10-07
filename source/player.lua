@@ -13,13 +13,16 @@ function Player:init(x, y)
     local dinoImageTable = gfx.imagetable.new("images/dino")
     self.animationLoop = gfx.animation.loop.new(150, dinoImageTable, true)
     self.animationLoop.endFrame = 4
+    
+    self.animationState = 'idle'
     self.pos = {
         x = x,
         y = y,
         vx = 5,
         vy = 2,
+        ay = 1,
         flip = gfx.kImageUnflipped,
-        gravity = 10
+        inAir = true
     }
 
     self.animationData = {
@@ -30,13 +33,13 @@ function Player:init(x, y)
     self:setAnimationState('running')
     self:moveTo(self.pos.x, self.pos.y)
     self:setSize(48, 48)
-    self:setCollideRect(7, 7, 32, 36)
+    self:setCollideRect(14, 10, 16, 32)
     self:add()
 end
 
 function Player:setAnimationState(state, direction) 
-    if direction == 'left' then self.pos.flip = gfx.kImageFlippedX end
-    if direction == 'right' then self.pos.flip = gfx.kImageUnflipped end
+    if direction == -1 then self.pos.flip = gfx.kImageFlippedX end
+    if direction == 1 then self.pos.flip = gfx.kImageUnflipped end
     if self.animationState == state then 
         return nil
     end
@@ -46,50 +49,64 @@ function Player:setAnimationState(state, direction)
 end
 
 function Player:collisionResponse(other)
-    return 'freeze'
+    return 'slide'
 end
 
 function Player:update()
-    self:setImage(self.animationLoop:image(), self.pos.flip, 2)
-    local idle = true
-
-    -- check for input
-    -- check for physics
-    -- move 
-
-    oldY = self.y
-    local actualX, actualY, collisions = self:moveWithCollisions(self.x, self.y + self.pos.vy)
-    if self.y + self.pos.vy == actualY then
-        self.pos.vy += self.pos.gravity
-    else
-        self.pos.vy = 0
-    end
     
-    -- jump 
+    -- check for input
+    local jump = false
+    local direction = 0
+
     if pd.buttonIsPressed(pd.kButtonUp) then
-        self.pos.vy += -10
-        -- idle = false
+        jump = true
     end
-    print('inAir', self.pos.vy)
 
-    -- direction
     if pd.buttonIsPressed(pd.kButtonLeft) then
-        idle = false
-        self:setAnimationState('running', 'left')
-        if self.x > 0 then
-            self:moveBy(-self.pos.vx, 0)
-        end
+        direction = -1
     elseif pd.buttonIsPressed(pd.kButtonRight) then
-        idle = false
-        self:setAnimationState('running', 'right')
-        if self.x < 320 then
-            self:moveWithCollisions(self.x + self.pos.vx, self.y)
-        end
+        direction = 1
     end
 
-    if idle then
+    -- check for physics
+    if self.pos.ay < 1 then
+        self.pos.ay += 1
+    end
+
+    if self.pos.inAir then
+        self.pos.vy += self.pos.ay
+    elseif jump then
+        self.pos.ay = -4
+        self.pos.inAir = true
+        self.pos.vy += self.pos.ay
+    end
+
+    local expectedY = self.y + self.pos.vy
+
+   
+    -- set animation
+    if direction ~= 0 then
+        self:setAnimationState('running', direction)
+    else
         self:setAnimationState('idle')
     end
+    self:setImage(self.animationLoop:image(), self.pos.flip, 2)
 
-    -- print(#self:overlappingSprites())
+    -- move 
+    if (expectedY > 240) then
+        self.pos.vy = 2
+        self.pos.ay = 1
+        self:moveTo(30, 0)
+    else
+        local actualX, actualY, collisions =  self:moveWithCollisions(self.x + direction * self.pos.vx, expectedY)
+        if #collisions > 0 then
+            -- on the ground (let's assume for now) 
+            -- set default values
+            self.pos.vy = 2
+            self.pos.inAir = false
+            self.pos.ay = 1
+        else
+            self.pos.inAir = true
+        end
+    end
 end
