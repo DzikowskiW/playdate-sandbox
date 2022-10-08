@@ -20,7 +20,7 @@ function Player:init(x, y)
         y = y,
         vx = 5,
         vy = 2,
-        ay = 1,
+        dy = 1,
         flip = gfx.kImageUnflipped,
         inAir = true
     }
@@ -56,16 +56,16 @@ function Player:update()
     
     -- check for input
     local jump = false
-    local direction = 0
+    local dx = 0
 
     if pd.buttonIsPressed(pd.kButtonUp) then
         jump = true
     end
 
     if pd.buttonIsPressed(pd.kButtonLeft) then
-        direction = -1
+        dx = -1
     elseif pd.buttonIsPressed(pd.kButtonRight) then
-        direction = 1
+        dx = 1
     end
 
     -- check for physics
@@ -78,15 +78,15 @@ function Player:update()
     elseif jump then
         self.pos.ay = -4
         self.pos.inAir = true
-        self.pos.vy += self.pos.ay
+        self.pos.vy += self.pos.dy
     end
 
     local expectedY = self.y + self.pos.vy
 
    
     -- set animation
-    if direction ~= 0 then
-        self:setAnimationState('running', direction)
+    if dx ~= 0 then
+        self:setAnimationState('running', dx)
     else
         self:setAnimationState('idle')
     end
@@ -98,7 +98,7 @@ function Player:update()
         self.pos.ay = 1
         self:moveTo(30, 0)
     else
-        local actualX, actualY, collisions =  self:moveWithCollisions(self.x + direction * self.pos.vx, expectedY)
+        local actualX, actualY, collisions =  self:moveWithCollisions(self.x + dx * self.pos.vx, expectedY)
         if #collisions > 0 then
             -- on the ground (let's assume for now) 
             -- set default values
