@@ -20,7 +20,7 @@ function Player:init(x, y)
         y = y,
         vx = 5,
         vy = 2,
-        dy = 1,
+        ay = 1,
         flip = gfx.kImageUnflipped,
         inAir = true
     }
@@ -78,7 +78,7 @@ function Player:update()
     elseif jump then
         self.pos.ay = -4
         self.pos.inAir = true
-        self.pos.vy += self.pos.dy
+        self.pos.vy += self.pos.ay
     end
 
     local expectedY = self.y + self.pos.vy
