@@ -13,11 +13,15 @@ function World:init()
     self.tileMap = gfx.tilemap.new()
 
     local platformImageTable = gfx.imagetable.new("images/tiles")
-    local mapData = json.decodeFile("maps/map1.json")
+    local mapData = json.decodeFile("maps/mapa1.json")
     local mapLayer= mapData.layers[1]
 
+    self.pos= {
+        x= 0
+    }
+
     self.tileMap:setImageTable(platformImageTable)
-    self.tileMap:setSize(25, 15)
+    self.tileMap:setSize(mapLayer.width, mapLayer.height)
     self.tileMap:setTiles(mapLayer.data, mapLayer.width)
 
     self.addWallSprites(self.tileMap)
@@ -26,6 +30,15 @@ function World:init()
     self:add()
 
     self.draw = function() self.tileMap:draw(0,0) end
+end
+
+function World:scrollTiles(dx)
+    if dx == 0 then
+        return
+    end
+    self.pos.x += dx
+    self.pos.x = self.pos.x > 0 and self.pos.x or 0
+    gfx.setDrawOffset(self.pos.x, 0)
 end
 
 function World:update()

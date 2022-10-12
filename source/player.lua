@@ -9,11 +9,12 @@ local gfx <const> = playdate.graphics
 
 class('Player').extends(gfx.sprite)
 
-function Player:init(x, y)
+function Player:init(x, y, world)
     local dinoImageTable = gfx.imagetable.new("images/dino")
     self.animationLoop = gfx.animation.loop.new(150, dinoImageTable, true)
     self.animationLoop.endFrame = 4
     
+    self.world = world
     self.animationState = 'idle'
     self.pos = {
         x = x,
@@ -82,6 +83,7 @@ function Player:update()
     end
 
     local expectedY = self.y + self.pos.vy
+    local expectedX = self.x + self.pos.vx
 
    
     -- set animation
@@ -93,6 +95,17 @@ function Player:update()
     self:setImage(self.animationLoop:image(), self.pos.flip, 2)
 
     -- move 
+    local xx,yy = gfx.getDrawOffset()
+    expectedOffsetX = expectedX - xx
+    print(xx, yy, expectedOffsetX)
+    if (expectedOffsetX < 100) and (dx < 0) then 
+        print('left s')
+        self.world:scrollTiles(-self.pos.vx * dx)
+    elseif (expectedOffsetX > 300) and (dx > 0) then
+        print('right s')
+        self.world:scrollTiles(-self.pos.vx * dx)
+    end
+
     if (expectedY > 240) then
         self.pos.vy = 2
         self.pos.ay = 1
