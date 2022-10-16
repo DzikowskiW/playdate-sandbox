@@ -97,19 +97,21 @@ function Player:update()
     -- move 
     local xx,yy = gfx.getDrawOffset()
     expectedOffsetX = expectedX - xx
-    print(xx, yy, expectedOffsetX)
+    print(xx, expectedOffsetX)
     if (expectedOffsetX < 100) and (dx < 0) then 
-        print('left s')
+        print('left s', dx)
         self.world:scrollTiles(-self.pos.vx * dx)
-    elseif (expectedOffsetX > 300) and (dx > 0) then
-        print('right s')
+    elseif (expectedOffsetX > 200) and (dx > 0) then
+        print('right s', dx)
         self.world:scrollTiles(-self.pos.vx * dx)
     end
 
     if (expectedY > 240) then
+        -- ded :( 
         self.pos.vy = 2
         self.pos.ay = 1
         self:moveTo(30, 0)
+        self.world:scrollToStart()
     else
         local actualX, actualY, collisions =  self:moveWithCollisions(self.x + dx * self.pos.vx, expectedY)
         if #collisions > 0 then

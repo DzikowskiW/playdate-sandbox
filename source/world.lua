@@ -26,7 +26,7 @@ function World:init()
 
     self.addWallSprites(self.tileMap)
 
-    self:setBounds(0,0,400,240)
+    self:setBounds(0, 0, mapLayer.width * mapData.tilewidth, 240)
     self:add()
 
     self.draw = function() self.tileMap:draw(0,0) end
@@ -37,7 +37,11 @@ function World:scrollTiles(dx)
         return
     end
     self.pos.x += dx
-    self.pos.x = self.pos.x > 0 and self.pos.x or 0
+    gfx.setDrawOffset(self.pos.x, 0)
+end
+
+function World:scrollToStart()
+    self.pos.x = 0
     gfx.setDrawOffset(self.pos.x, 0)
 end
 
