@@ -4,6 +4,8 @@ import "CoreLibs/sprites"
 import "CoreLibs/animation"
 import "CoreLibs/timer"
 
+import "platform"
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
@@ -24,8 +26,9 @@ function World:init()
     self.tileMap:setSize(mapLayer.width, mapLayer.height)
     self.tileMap:setTiles(mapLayer.data, mapLayer.width)
 
-    self.addWallSprites(self.tileMap)
+    Platform(128,128,32, 100, 0)
 
+    self.addWallSprites(self.tileMap)
     self:setBounds(0, 0, mapLayer.width * mapData.tilewidth, 240)
     self:add()
 

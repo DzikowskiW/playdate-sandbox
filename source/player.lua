@@ -97,7 +97,6 @@ function Player:update()
     -- move 
     local xx,yy = gfx.getDrawOffset()
     expectedOffsetX = expectedX - xx
-    print(xx, expectedOffsetX)
     if (expectedOffsetX < 100) and (dx < 0) then 
         print('left s', dx)
         self.world:scrollTiles(-self.pos.vx * dx)
