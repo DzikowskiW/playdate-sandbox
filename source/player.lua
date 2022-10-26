@@ -95,9 +95,10 @@ function Player:update()
     self:setImage(self.animationLoop:image(), self.pos.flip, 2)
 
     -- move 
-    local xx,yy = gfx.getDrawOffset()
-    expectedOffsetX = expectedX - xx
-    if (expectedOffsetX < 100) and (dx < 0) then 
+    local worldOffestX = gfx.getDrawOffset()
+    expectedOffsetX = expectedX + worldOffestX
+
+    if (expectedOffsetX < 200) and (dx < 0) then 
         print('left s', dx)
         self.world:scrollTiles(-self.pos.vx * dx)
     elseif (expectedOffsetX > 200) and (dx > 0) then
